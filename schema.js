@@ -4,24 +4,35 @@ const db = require('./db.json');
 const typeDefs = gql`
 
  type Beast {
-      id: ID 
-			legs: Int,
-	    binomial: String,
-	    commonName: String,
-	    class: String,
-	    eats: [Beast],
-	    isEatenBy: [Beast]
+      id: ID
+			legs: Int
+	    binomial: String
+	    commonName: String
+	    class: String
+	    eats: Beast
+	    isEatenBy: Beast
 
   }
 
   type Query {
     beasts: [Beast]
+		beast(id: ID!): Beast
   }
 `
 
 const resolvers = {
 	Query: {
+		// returns array of all beasts
 		beasts: () => db.beasts,
+		// returns one beast given ID
+		beast: (_, args) => db.beasts.find(element => element.id === args.id)
+	},
+	Beast: {
+		eats: (parent) => db.beasts.find(element => element.id === parent.eats.id)
+		// eats (parent, args) {  
+		// 	console.log(args.id) 
+		// 	console.log(parent.isEatenBy.id) 
+		// }
 	}
 }
 
