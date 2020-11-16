@@ -1,0 +1,28 @@
+{
+  "name": "minimal-graphql-apollo-server",
+  "version": "1.0.0",
+  "description": "Oh-so minimal GraphQL API example with Apollo Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PreciousChicken/minimal-graphql-apollo-server.git"
+  },
+  "keywords": [
+    "graphql",
+    "node",
+    "apollo server"
+  ],
+  "author": "PreciousChicken",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PreciousChicken/minimal-graphql-apollo-server/issues"
+  },
+  "homepage": "https://github.com/PreciousChicken/minimal-graphql-apollo-server#readme",
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "graphql": "^15.4.0"
+  }
+}

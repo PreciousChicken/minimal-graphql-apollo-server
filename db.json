@@ -1,0 +1,41 @@
+{
+  "beasts": [
+    {
+	    "id": 1,
+	    "legs": 6,
+	    "binomial": "Musca domestica",
+	    "commonName": "housefly",
+	    "class": "Insecta",
+	    "eats": [],
+	    "isEatenBy": [2]
+    },
+    {
+	    "id": 2,
+	    "legs": 8,
+	    "binomial": "Neriene radiata",
+	    "commonName": "filmy dome spider",
+	    "class": "Arachnida",
+	    "eats": [1],
+	    "isEatenBy": [3]
+    },
+    {
+	    "id": 3,
+	    "legs": 2,
+	    "binomial": "Corvus corone",
+	    "commonName": "carrion crow",
+	    "class": "Aves",
+	    "eats": [2],
+	    "isEatenBy": [4]
+    },
+    {
+	    "id": 4,
+	    "legs": 4,
+	    "binomial": "Felis catus",
+	    "commonName": "cat",
+	    "class": "Mammalia",
+	    "eats": [3],
+	    "isEatenBy": []
+    }
+  ]
+}
+
