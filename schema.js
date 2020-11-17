@@ -9,8 +9,9 @@ const typeDefs = gql`
 	    binomial: String
 	    commonName: String
 	    class: String
-	    eats: Beast
-	    isEatenBy: Beast
+	    eats: [ Beast ]
+			"beast eaten by"
+	    isEatenBy: [ Beast ]
 
   }
 
@@ -28,10 +29,20 @@ const resolvers = {
 		beast: (_, args) => db.beasts.find(element => element.id === args.id)
 	},
 	Beast: {
-		eats: (parent) => db.beasts.find(element => element.id === parent.eats.id)
+		eats (parent) {
+			let eatenBeasts = [];
+			for (eaten of parent.eats) {
+				eatenBeasts.push(
+					db.beasts.find(
+						element => element.id === eaten));
+			}
+			return eatenBeasts;
+		}
+		
+		// eats: (parent) => db.beasts.find(element => element.id === parent.eats.id)
 		// eats (parent, args) {  
 		// 	console.log(args.id) 
-		// 	console.log(parent.isEatenBy.id) 
+		// 	console.log(parent.eats) 
 		// }
 	}
 }

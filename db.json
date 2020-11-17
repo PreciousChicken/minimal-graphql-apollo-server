@@ -6,8 +6,8 @@
 	    "binomial": "Musca domestica",
 	    "commonName": "housefly",
 	    "class": "Insecta",
-	    "eats": { "id": null },
-	    "isEatenBy": { "id": "nr" }
+	    "eats": [ null ],
+	    "isEatenBy": [ "nr" ]
     },
     {
 	    "id": "nr",
@@ -15,8 +15,8 @@
 	    "binomial": "Neriene radiata",
 	    "commonName": "filmy dome spider",
 	    "class": "Arachnida",
-	    "eats": { "id": "md" },
-	    "isEatenBy": { "id": "cc"}
+	    "eats": [ "md" ],
+	    "isEatenBy": [ "cc"]
     },
     {
 	    "id": "cc",
@@ -24,8 +24,8 @@
 	    "binomial": "Corvus corone",
 	    "commonName": "carrion crow",
 	    "class": "Aves",
-	    "eats": { "id": "nr"},
-	    "isEatenBy": { "id": "fc"}
+	    "eats": [ "nr"],
+	    "isEatenBy": [ "fc"]
     },
     {
 	    "id": "fc",
@@ -33,9 +33,10 @@
 	    "binomial": "Felis catus",
 	    "commonName": "cat",
 	    "class": "Mammalia",
-	    "eats": { "id": "cc" },
-	    "isEatenBy": { "id": null }
+	    "eats": [ "cc", "nr" ],
+	    "isEatenBy": [ null ]
     }
   ]
 }
+
 
