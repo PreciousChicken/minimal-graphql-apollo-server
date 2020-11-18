@@ -2,37 +2,55 @@ const { gql } = require('apollo-server');
 const db = require('./db.json');
 
 const typeDefs = gql`
-
- type Beast {
-			"ID of beast (taken from binomial initial)"
-      id: ID
-			"number of legs beast has"
-			legs: Int
-			"a beasts name in Latin"
-	    binomial: String
-			"a beasts name to you and I"
-	    commonName: String
-			"taxonomy grouping"
-	    class: String
-			"a beasts prey"
-	    eats: [ Beast ]
-			"a beasts predators"
-	    isEatenBy: [ Beast ]
-
-  }
+  type Beast {
+		"ID of beast (taken from binomial initial)"
+		id: ID
+		"number of legs beast has"
+		legs: Int
+		"a beast's name in Latin"
+		binomial: String
+		"a beast's name to you and I"
+		commonName: String
+		"taxonomy grouping"
+		class: String
+		"a beast's prey"
+		eats: [ Beast ]
+		"a beast's predators"
+		isEatenBy: [ Beast ]
+	}
 
   type Query {
-    beasts: [Beast]
+		beasts: [Beast]
 		beast(id: ID!): Beast
-  }
+		calledBy(commonName: String!): [Beast]
+	}
+
+	type Mutation {
+		createBeast(id: ID!, legs: Int!, binomial: String!, 
+		  commonName: String!, class: String!, eats: [ ID ]
+			): Beast 
+	}
 `
 
 const resolvers = {
 	Query: {
-		// returns array of all beasts
+		// Returns array of all beasts.
 		beasts: () => db.beasts,
-		// returns one beast given ID
-		beast: (_, args) => db.beasts.find(element => element.id === args.id)
+		// Returns one beast given ID.
+		// NB: underscore in the arguments refers to 'parent', which is not required, see:
+		// https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments
+		beast: (_, args) => db.beasts.find(element => element.id === args.id),
+		// Returns array of beasts where commonName matches partial string
+		// NB: The 'args' argument is destructured in this example
+		calledBy (_, {commonName}) {
+			let namedBeasts = [];
+			for (let beast of db.beasts) {
+				if (beast.commonName.includes(commonName)) {
+					namedBeasts.push(beast);
+				}
+			}
+			return namedBeasts;
+		}
 	},
 	Beast: {
 		// Returns an array of beasts that a given beasts eats (e.g. prey).
@@ -67,6 +85,19 @@ const resolvers = {
 				}
 			}
 			return predators;
+		}
+	},
+	Mutation: {
+		createBeast (_, args) {
+			let newBeast = {
+				id: args.id, 
+				legs: args.legs, 
+				binomial: args.binomial, 
+				commonName: args.commonName,
+				class: args.class,
+				eats: args.eats 
+			}
+			db.beasts.push(newBeast);
 		}
 	}
 }
