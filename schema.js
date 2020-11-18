@@ -4,13 +4,19 @@ const db = require('./db.json');
 const typeDefs = gql`
 
  type Beast {
+			"ID of beast (taken from binomial initial)"
       id: ID
+			"number of legs beast has"
 			legs: Int
+			"a beasts name in Latin"
 	    binomial: String
+			"a beasts name to you and I"
 	    commonName: String
+			"taxonomy grouping"
 	    class: String
+			"a beasts prey"
 	    eats: [ Beast ]
-			"beast eaten by"
+			"a beasts predators"
 	    isEatenBy: [ Beast ]
 
   }
@@ -29,81 +35,41 @@ const resolvers = {
 		beast: (_, args) => db.beasts.find(element => element.id === args.id)
 	},
 	Beast: {
+		// Returns an array of beasts that a given beasts eats (e.g. prey).
+		// This is a field within db.json, so simply take this field
+		// for each beast and see what beasts match this id and then return 
+		// as array.
+		// Parent argument is beast that API is currently focussed on e.g. housefly.
 		eats (parent) {
-			let eatenBeasts = [];
-			for (eaten of parent.eats) {
-				eatenBeasts.push(
+			let prey = [];
+			for (let eaten of parent.eats) {
+				prey.push(
 					db.beasts.find(
 						element => element.id === eaten));
 			}
-			return eatenBeasts;
+			return prey;
+		},
+		// Returns an array of beasts that eat a given beast (e.g. predators).
+		// This is NOT a field within db.json, so involves more work.
+		isEatenBy (parent) {
+			let predators = [];
+			for (let beast of db.beasts) {
+				let predatorId;
+				for (let eaten of beast.eats) {
+					if (eaten === parent.id) {
+						predatorId = beast.id;
+					}
+				}
+				if (predatorId) {
+					predators.push(
+						db.beasts.find(
+							element => element.id === predatorId));
+				}
+			}
+			return predators;
 		}
-		
-		// eats: (parent) => db.beasts.find(element => element.id === parent.eats.id)
-		// eats (parent, args) {  
-		// 	console.log(args.id) 
-		// 	console.log(parent.eats) 
-		// }
 	}
 }
 
 exports.typeDefs = typeDefs;
 exports.resolvers = resolvers;
-
-
-/*
-import db from './db.json';
-import itemModel from './models'
-import { gql } from 'apollo-server-express'
-
-console.log(db.items);
-
-export const typeDefs = gql`
-
- type Item {
-      niin: String
-      nsc: String
-      smbi: String
-      basic_price: Int 
-      long_item_name: String
-      short_item_name: String
-      uoi: String
-  }
-
-  type Query {
-    allitems: [Item]
-		details: String
-		anitem: Item
-		searchitem(searchterm: String!): Item
-		searchItemMore(searchTerm: String!): String
-  }
-`
-	var testniin = "999998953";
-
-export const resolvers = {
-	Query: {
-		allitems: () => db.items,
-		anitem: () => db.items.find(element => element.niin === '009998911'),
-		searchitem: (_, {searchterm}) => db.items.find(element => element.niin === searchterm),
-		searchItemMore: function(_, args) {
-			return args.searchTerm;
-		}
-}
-}
-
-*/
-
-// export const resolvers = {
-// 	Query: {
-// 		items() {
-// 			return itemModel.list()
-// 		},
-// 		details: () =>  { return "hello" }
-// 		// finditem: (_, { niin }, __) => { return Item }
-// 	},
-// 	Item: {
-// 		niin: (parent) => parent.long_item_name
-// 	}
-// }
-
-
