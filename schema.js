@@ -1,8 +1,10 @@
 const { gql } = require('apollo-server');
 const db = require('./db.json');
 
+// The statements within quotes are used by GraphQL to provide
+// human readable descriptions to developers using the API
 const typeDefs = gql`
-  type Beast {
+	type Beast {
 		"ID of beast (taken from binomial initial)"
 		id: ID
 		"number of legs beast has"
@@ -19,7 +21,7 @@ const typeDefs = gql`
 		isEatenBy: [ Beast ]
 	}
 
-  type Query {
+	type Query {
 		beasts: [Beast]
 		beast(id: ID!): Beast
 		calledBy(commonName: String!): [Beast]
@@ -27,21 +29,29 @@ const typeDefs = gql`
 
 	type Mutation {
 		createBeast(id: ID!, legs: Int!, binomial: String!, 
-		  commonName: String!, class: String!, eats: [ ID ]
+			commonName: String!, class: String!, eats: [ ID ]
 			): Beast 
 	}
 `
 
 const resolvers = {
+
 	Query: {
+
 		// Returns array of all beasts.
 		beasts: () => db.beasts,
+
 		// Returns one beast given ID.
-		// NB: underscore in the arguments refers to 'parent', which is not required, see:
+		// Underscore in the arguments is required and 
+		// refers to 'parent', see:
 		// https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments
 		beast: (_, args) => db.beasts.find(element => element.id === args.id),
-		// Returns array of beasts where commonName matches partial string
-		// NB: The 'args' argument is destructured in this example
+
+		// Returns array of beasts where commonName matches 
+		// partial string.
+		// 'Args' argument is destructured here, 
+		// e.g. curly brackets means we don't have to write
+		// 'args.commonName'
 		calledBy (_, {commonName}) {
 			let namedBeasts = [];
 			for (let beast of db.beasts) {
@@ -52,12 +62,15 @@ const resolvers = {
 			return namedBeasts;
 		}
 	},
+
 	Beast: {
-		// Returns an array of beasts that a given beasts eats (e.g. prey).
-		// This is a field within db.json, so simply take this field
-		// for each beast and see what beasts match this id and then return 
-		// as array.
-		// Parent argument is beast that API is currently focussed on e.g. housefly.
+
+		// Returns an array of beasts eaten (e.g. prey).
+		// This is a field within db.json, so simply field 
+		// for each beast and see what beasts match this id
+		// and then return as array.
+		// Parent argument is beast that API is currently 
+		// focussed on e.g. housefly.
 		eats (parent) {
 			let prey = [];
 			for (let eaten of parent.eats) {
@@ -67,8 +80,11 @@ const resolvers = {
 			}
 			return prey;
 		},
-		// Returns an array of beasts that eat a given beast (e.g. predators).
-		// This is NOT a field within db.json, so involves more work.
+
+		// Returns an array of beasts that eat a given beast 
+		// (e.g. predators).
+		// This is NOT a field within db.json, so 
+		// involves calculating from list of prey within db.json.
 		isEatenBy (parent) {
 			let predators = [];
 			for (let beast of db.beasts) {
@@ -87,6 +103,11 @@ const resolvers = {
 			return predators;
 		}
 	},
+
+	// Adds (and returns) new beast created by user.
+	// As this is a minimal example it does not save to 
+	// db.json and is in memory only so will delete 
+	// on node restart.
 	Mutation: {
 		createBeast (_, args) {
 			let newBeast = {
@@ -98,6 +119,7 @@ const resolvers = {
 				eats: args.eats 
 			}
 			db.beasts.push(newBeast);
+			return newBeast;
 		}
 	}
 }
