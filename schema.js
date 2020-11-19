@@ -14,7 +14,7 @@ const typeDefs = gql`
 		"a beast's name to you and I"
 		commonName: String
 		"taxonomy grouping"
-		class: String
+		taxClass: String
 		"a beast's prey"
 		eats: [ Beast ]
 		"a beast's predators"
@@ -29,7 +29,7 @@ const typeDefs = gql`
 
 	type Mutation {
 		createBeast(id: ID!, legs: Int!, binomial: String!, 
-			commonName: String!, class: String!, eats: [ ID ]
+			commonName: String!, taxClass: String!, eats: [ ID ]
 			): Beast 
 	}
 `
@@ -115,7 +115,7 @@ const resolvers = {
 				legs: args.legs, 
 				binomial: args.binomial, 
 				commonName: args.commonName,
-				class: args.class,
+				taxClass: args.taxClass,
 				eats: args.eats 
 			}
 			db.beasts.push(newBeast);
