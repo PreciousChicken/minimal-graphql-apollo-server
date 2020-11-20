@@ -66,9 +66,9 @@ const resolvers = {
 	Beast: {
 
 		// Returns an array of beasts eaten (e.g. prey).
-		// This is a field within db.json, so simply field 
-		// for each beast and see what beasts match this id
-		// and then return as array.
+		// This is a field corresponding to an array of IDs
+		// within db.json; so this matches those IDs to Beast
+		// objects and then returns those objects as an array.
 		// Parent argument is beast that API is currently 
 		// focussed on e.g. housefly.
 		eats (parent) {
@@ -85,6 +85,7 @@ const resolvers = {
 		// (e.g. predators).
 		// This is NOT a field within db.json, so 
 		// involves calculating from list of prey within db.json.
+		// i.e. if x eats y, then y isEatenBy x.
 		isEatenBy (parent) {
 			let predators = [];
 			for (let beast of db.beasts) {
@@ -106,7 +107,7 @@ const resolvers = {
 
 	// Adds (and returns) new beast created by user.
 	// As this is a minimal example it does not save to 
-	// db.json and is in memory only so will delete 
+	// db.json.  As it is in memory only will delete 
 	// on node restart.
 	Mutation: {
 		createBeast (_, args) {
